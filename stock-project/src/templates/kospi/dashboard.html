@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pearl's Stock News</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/carousel.rtl.css' %}">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Pearl's Stock News</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/company">Companies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/search" tabindex="-1" aria-disabled="true">News</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container marketing">
+            {% for headline in headlines %}
+            <hr class="featurette-divider">
+
+            <div class="row featurette">
+                <div class="col-md-7">
+                    <h2 class="featurette-heading">{{ headline.headline }} <span class="text-muted"></span></h2>
+                    <p class="lead">{{ headline.content }}</p>
+                </div>
+                <div class="col-md-5">{{ headline.date }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+
+</html>
+
+<!-- {% for headline in headlines %}
+<ul>
+    {{ headline.headline }}
+    {{ headline.content }}
+    {{ headline.writer }}
+    {{ headline.date }}
+</ul>
+{% endfor %}
+
+{{ headline.0.headline }} {{ headline.0.content }}
+{{ headline.1.headline }} {{ headline.1.content }} -->

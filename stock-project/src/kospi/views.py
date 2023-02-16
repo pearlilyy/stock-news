@@ -4,6 +4,8 @@ import urllib.request
 import sys
 from django.shortcuts import render
 from mystock import settings
+from bs4 import BeautifulSoup
+import requests
 
 from .models import Company
 from django.core.paginator import Paginator
@@ -90,3 +92,59 @@ def search(request):
         else:
             print("Error Code:" + rescode)
         return render(request, 'kospi/search.html', context=context)
+
+
+def dashboard(request, *args, **kwargs):
+    urls = 'https://www.wsj.com/news/markets/stocks?mod=nav_top_subsection'
+    headers = {
+        'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"}
+    res = requests.get(urls, headers=headers)
+    soups = BeautifulSoup(res.text, 'html.parser')
+
+    data_head = soups.select(
+        "#main > #latest-stories > article > div.WSJTheme--content-float-right--1NZyrHNk > div.WSJTheme--headline--7VCzo7Ay > h2.WSJTheme--headline--unZqjb45 > a > span")
+    data_con = soups.select(
+        "#main > #latest-stories > article > div.WSJTheme--content-float-right--1NZyrHNk > p > span"
+    )
+    data_writer = soups.select(
+        "#main > #latest-stories > article > div.WSJTheme--content-float-right--1NZyrHNk > div.WSJTheme--combined-timestamp--8qWYFuAV > p"
+    )
+    data_date = soups.select(
+        "#main > #latest-stories > article > div.WSJTheme--content-float-right--1NZyrHNk > div.WSJTheme--combined-timestamp--8qWYFuAV > div > p"
+    )
+
+    head_list = list()
+    con_list = list()
+    writer_list = list()
+    date_list = list()
+    headlines = list()
+
+    for data in data_head:
+        head_list.append(data.text.strip())
+
+    for data in data_con:
+        con_list.append(data.text.strip())
+
+    for data in data_writer:
+        writer_list.append(data.text.strip())
+
+    for data in data_date:
+        date_list.append(data.text.strip())
+
+    for i in range(len(head_list)):
+        headline = data_head[i].text.strip()
+        content = data_con[i].text.strip()
+        writer = data_writer[i].text.strip()
+        date = data_date[i].text.strip()
+
+        item_objs = {
+            'headline': headline,
+            'content': content,
+            'writer': writer,
+            'date': date
+        }
+        headlines.append(item_objs)
+    context = {
+        'headlines': headlines
+    }
+    return render(request, 'kospi/dashboard.html', context)

@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from kospi.views import index, company, search
+from kospi.views import index, company, search, dashboard
 
 urlpatterns = [
     path('', index),
     path('company/', company, name='company'),
     path('search/', search, name='search'),
+    path('dashboard/', dashboard, name='dashboard'),
     path('admin/', admin.site.urls),
 ]
